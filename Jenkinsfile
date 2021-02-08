@@ -49,47 +49,22 @@ pipeline {
     // Build the containers for all of the necessary architectures and push them to the repo
     stage('Build & Deploy Containers') {
       parallel {
-      stage('Build x86_64') {
-        steps {
-          echo "Running on node: ${NODE_NAME}"
-
-          sript {
-            withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
-              sh '''
-                dockerImage = docker.build("${TKF_REPO}")
-
-              '''
-            }
-          }
-        }
-      }
-/*
-        stage('Build & Deploy') {
+        stage('Build x86_64') {
           steps {
             echo "Running on node: ${NODE_NAME}"
-            //sh "docker build --no-cache --pull -t ${IMAGE}:amd64-${META_TAG} ."
 
             script {
               withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
                 sh '''
-                  # Create a buildx builder for this container
-                  docker buildx create --use --name automated-builder-${TKF_REPO}-${BUILD_NUMBER} --platform="${TKF_PLATFORMS}"
-
-                  # Build the images and push them
-                  docker buildx build -t ${DOCKERHUB_IMAGE} --platform="${TKF_PLATFORMS}" . --push
-
-                  # Clean up the builder 
-                  docker buildx rm automated-builder-${TKF_REPO}-${BUILD_NUMBER}
+                  dockerImage = docker.build("${TKF_REPO}")
                 '''
               }
             }
           }
         }
-*/
       }
     }
   }
-
   post {
     cleanup {
       cleanWs()
