@@ -8,9 +8,10 @@ ENV MIRROR=http://dl-cdn.alpinelinux.org/alpine
 ENV PACKAGES=alpine-baselayout,\
 alpine-keys,\
 apk-tools,\
-busybox\
-libc-utils\
+busybox,\
+libc-utils,\
 xz
+
 
 # Install the package set
 RUN apk add --no-cache \
