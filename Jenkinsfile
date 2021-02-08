@@ -56,7 +56,7 @@ pipeline {
             script {
               withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
                 sh '''
-                  dockerImage = docker.build(${TKF_REPO})
+                  dockerImage = docker.build ${DOCKERHUB_IMAGE}
                 '''
               }
             }
