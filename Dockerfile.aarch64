@@ -23,7 +23,7 @@ RUN apk add --no-cache \
 # This script sets the timezone and does a few 
 # extra tweaks to the image ... TBD: Document what all they do
 
-RUN curl -o /mkimage-alpine.bash -L https://raw.githubusercontent.com/gliberlabs/docker-alpine/master/builder/scripts/mkimage-alpine.bash 
+RUN curl -o /mkimage-alpine.bash -L https://raw.githubusercontent.com/gliderlabs/docker-alpine/master/builder/scripts/mkimage-alpine.bash
 
 RUN chmod +x /mkimage-alpine.bash
 RUN /mkimage-alpine.bash
