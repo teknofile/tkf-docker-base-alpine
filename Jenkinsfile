@@ -17,7 +17,7 @@ pipeline {
     TKF_PLATFORMS = 'linux/arm/v7,linux/arm64,linux/amd64'
     TKF_USER = 'teknofile'
     TKF_REPO = 'tkf-docker-base-alpine'
-    DOCKERHUB_IMAGE = "${TKF_USER}" + "/" + "${TKF_REPO}"
+    DOCKERHUB_IMAGE = '${TKF_USER}' + "/" + '${TKF_REPO}'
 
   }
 
@@ -62,7 +62,7 @@ pipeline {
                   docker buildx create --use --name automated-builder-${TKF_REPO}-${BUILD_NUMBER} --platform="${TKF_PLATFORMS}"
 
                   # Build the images and push them
-                  docker buildx build -t ${DOCKERHUB_IMAGE} --platform="${TKF_PLATFORMS} . --push
+                  docker buildx build -t ${DOCKERHUB_IMAGE} --platform="${TKF_PLATFORMS}" . --push
 
                   # Clean up the builder 
                   docker buildx rm automated-builder-${TKF_REPO}-${BUILD_NUMBER}
