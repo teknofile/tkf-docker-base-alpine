@@ -57,7 +57,7 @@ pipeline {
               withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
                 sh '''
                   # Create a buildx builder for this container
-                  docker buildx create --user --name automated-builder-${TKF_REPO}-${BUILD_NUMBER}
+                  docker buildx create --use --name automated-builder-${TKF_REPO}-${BUILD_NUMBER}
 
                   # Build the images and push them
                   docker buildx build -t ${DOCKERHUB_IMAGE} --platform=linux/arm,linux/arm64,linux/amd64 . --push
