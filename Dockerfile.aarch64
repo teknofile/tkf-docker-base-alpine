@@ -83,7 +83,7 @@ RUN mkdir -p /app /config /defaults
 RUN mv /usr/bin/with-contenv /usr/bin/with-contenvb
 RUN patch -u /etc/s6/init/init-stage2 -i /tmp/patch/etc/s6/init/init-stage2.patch
 RUN echo "**** add qemu ****"
-RUN curl -o /usr/bin/qemu-aarch64-static
+RUN curl -o /usr/bin/qemu-aarch64-static  "https://lsio-ci.ams3.digitaloceanspaces.com/qemu-aarch64-static"
 RUN echo "**** cleanup ****"
 RUN apk del --purge build-dependencies
 RUN rm -rf /tmp/*
