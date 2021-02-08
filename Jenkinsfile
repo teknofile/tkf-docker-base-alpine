@@ -16,9 +16,7 @@ pipeline {
   environment {
     TKF_USER = 'teknofile'
     TKF_REPO = 'tkf-docker-base-alpine'
-
-    CONTAINER_NAME = 'tkf-docker-base-alpine'
-    DOCKERHUB_IMAGE = 'teknofile/tkf-docker-base-alpine'
+    DOCKERHUB_IMAGE = ${TKF_USER} + "/" + "${TKF_REPO}"
   }
 
   stages {
@@ -40,42 +38,37 @@ pipeline {
       }
     }
 
+
+    stage("Cloning Git") {
+      steps {
+        git([url: 'https://github.com/teknofile/tkf-docker-base-alpine.git', branch: 'main', credentialsId: 'teknofile-github-user-token'])
+      }
+    }
+
     // Build the containers for all of the necessary architectures and push them to the repo
-    stage('Build Containers') {
+    stage('Build & Deploy Containers') {
       parallel {
-        stage('Build X86_64') {
+        stage('Build & Deploy') {
           steps {
             echo "Running on node: ${NODE_NAME}"
-            sh "docker build --no-cache --pull -t ${IMAGE}:amd64-${META_TAG} ."
-            // TODO: Tag/Push images
-          }
-        }
-/*
-        stage('Build armhf') {
-          agent {
-            label 'ARMHF'
-          }
+            #sh "docker build --no-cache --pull -t ${IMAGE}:amd64-${META_TAG} ."
 
-          steps {
-            echo "Running on node: ${NODE_NAME}"
-            sh "docker build --no-cache --pull -f Dockerfile.armhf -t ${IMAGE}:arm32v7-${META_TAG} ."
-            // TODO: Tag/Push images
-          }
-        }
-*/
-/*
-        stage('Build arm64') {
-          agent {
-            label 'ARM64'
-          }
+            script {
+              widthDockerRegistry(credentialsId: 'teknofile-dockerhub') {
+                sh '''
+                  # Create a buildx builder for this container
+                  docker buildx create --user --name automated-builder-${TKF_REPO}-${BUILD_NUMBER}
 
-          steps {
-            echo "Running on node: ${NODE_NAME}"
-            sh "docker build --no-cache --pull -f Dockerfile.aarch64 -t ${IMAGE}:arm64v8-${META_TAG} ."
-            // TODO: Tag/Push images
+                  # Build the images and push them
+                  docker buildx build -t ${DOCKERHUB_IMAGE} --platform=linux/arm,linux/arm64,linux/amd64 . --push
+
+                  # Clean up the builder 
+                  docker buildx rm automated-builder-${TKF_REPO}-${BUILD_NUMBER}
+                '''
+              }
+            }
           }
         }
-*/
       }
     }
   }
