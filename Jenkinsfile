@@ -16,7 +16,7 @@ pipeline {
   environment {
     TKF_USER = 'teknofile'
     TKF_REPO = 'tkf-docker-base-alpine'
-    DOCKERHUB_IMAGE = ${TKF_USER} + "/" + "${TKF_REPO}"
+    DOCKERHUB_IMAGE = "${TKF_USER}" + "/" + "${TKF_REPO}"
   }
 
   stages {
