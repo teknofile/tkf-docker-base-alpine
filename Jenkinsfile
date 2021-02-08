@@ -18,7 +18,6 @@ pipeline {
     TKF_USER = 'teknofile'
     TKF_REPO = 'tkf-docker-base-alpine'
     DOCKERHUB_IMAGE = "${TKF_USER}" + "/" + "${TKF_REPO}"
-
     dockerImage = ''
   }
 
@@ -50,12 +49,11 @@ pipeline {
     stage('Build x86_64') {
       steps {
         echo "Running on node: ${NODE_NAME}"
-
         script {
+          dockerImage = docker.build ${DOCKER_HUB_IMAGE}
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
-            sh '''
-              dockerImage = docker.build ${DOCKERHUB_IMAGE}
-            '''
+            dockerImage.push("${BUILD_NUMBER}")
+            dockerImage.push('latest')
           }
         }
       }
