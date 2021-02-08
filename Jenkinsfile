@@ -50,7 +50,7 @@ pipeline {
       steps {
         echo "Running on node: ${NODE_NAME}"
         script {
-          dockerImage = docker.build ${DOCKER_HUB_IMAGE}
+          dockerImage = docker.build DOCKERHUB_IMAGE
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
             dockerImage.push("${BUILD_NUMBER}")
             dockerImage.push('latest')
