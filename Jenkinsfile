@@ -51,7 +51,7 @@ pipeline {
         stage('Build & Deploy') {
           steps {
             echo "Running on node: ${NODE_NAME}"
-            #sh "docker build --no-cache --pull -t ${IMAGE}:amd64-${META_TAG} ."
+            //sh "docker build --no-cache --pull -t ${IMAGE}:amd64-${META_TAG} ."
 
             script {
               widthDockerRegistry(credentialsId: 'teknofile-dockerhub') {
