@@ -1,39 +1,20 @@
-FROM alpine:3.13 as rootfs-stage
+FROM alpine:3.13
 
+LABEL maintainer="teknofile"
 
-# Install the package set
+ARG OVERLAY_VERSION="v2.2.0.1"
+ARG OVERLAY_ARCH="amd64"
+
 RUN apk add --no-cache \
   bash \
   curl \
-  tzdata \
+  tzdata \ 
   xz \
   alpine-keys \
   alpine-baselayout \
   apk-tools \
   busybox \
   libc-utils
-
-# Fetch the builder script from gliberlabs
-# This script sets the timezone and does a few 
-# extra tweaks to the image ... TBD: Document what all they do
-
-RUN curl -o /mkimage-alpine.bash -L https://raw.githubusercontent.com/gliderlabs/docker-alpine/master/builder/scripts/mkimage-alpine.bash
-
-RUN chmod +x /mkimage-alpine.bash
-RUN /mkimage-alpine.bash
-RUN mkdir /root-out
-RUN tar xf /rootfs.tar.xz -C /root-out
-RUN sed -i -e 's/^root::/root:!:/' /root-out/etc/shadow
-
-
-# Runtime stage
-FROM scratch
-COPY --from=rootfs-stage /root-out/ /
-
-LABEL maintainer="teknofile"
-
-ARG OVERLAY_VERSION="v2.2.0.1"
-ARG OVERLAY_ARCH="amd64"
 
 # Add s6 overlay
 ADD https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}-installer /tmp/
