@@ -46,14 +46,30 @@ pipeline {
       }
     }
 
-    stage('Build x86_64') {
+    stage('Build amd64') {
+      agent {
+        label 'X86_64'
+      }
       steps {
         echo "Running on node: ${NODE_NAME}"
         script {
           dockerImage = docker.build DOCKERHUB_IMAGE
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
-            dockerImage.push("${BUILD_NUMBER}")
-            dockerImage.push('latest')
+            dockerImage.push("amd64")
+          }
+        }
+      }
+    }
+    stage('Build aarch64') {
+      agent {
+        label 'aarch64'
+      }
+      steps {
+        echo "Running on node: ${NODE_NAME}"
+        script {
+          dockerImage = docker.build DOCKERHUB_IMAGE
+          withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
+            dockerImage.push("aarch64")
           }
         }
       }
