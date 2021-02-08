@@ -35,7 +35,7 @@ pipeline {
             script: '''git rev-parse HEAD''',
             returnStdout: true).trim()
           env.IMAGE = env.DOCKERHUB_IMAGE
-          env.META_TAG = env.GITHUB_DATA + '-' + "alpine"
+          env.META_TAG = env.GITHUB_DATE + '-' + "alpine"
         }
       }
     }
