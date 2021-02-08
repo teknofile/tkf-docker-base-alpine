@@ -17,12 +17,11 @@ pipeline {
     TKF_PLATFORMS = 'linux/arm/v7,linux/arm64,linux/amd64'
     TKF_USER = 'teknofile'
     TKF_REPO = 'tkf-docker-base-alpine'
-    DOCKERHUB_IMAGE = '${TKF_USER}' + "/" + '${TKF_REPO}'
+    DOCKERHUB_IMAGE = "${TKF_USER}" + "/" + "${TKF_REPO}"
 
   }
 
   stages {
-    
     // Setup all the basic enviornment variables needed for the build
     stage("Setup ENV variables") {
       steps {
@@ -50,6 +49,21 @@ pipeline {
     // Build the containers for all of the necessary architectures and push them to the repo
     stage('Build & Deploy Containers') {
       parallel {
+      stage('Build x86_64') {
+        steps {
+          echo "Running on node: ${NODE_NAME}"
+
+          sript {
+            withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
+              sh '''
+                dockerImage = docker.build("${TKF_REPO}")
+
+              '''
+            }
+          }
+        }
+      }
+/*
         stage('Build & Deploy') {
           steps {
             echo "Running on node: ${NODE_NAME}"
@@ -71,6 +85,7 @@ pipeline {
             }
           }
         }
+*/
       }
     }
   }
