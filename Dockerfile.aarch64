@@ -48,9 +48,9 @@ ARG OVERLAY_VERSION="v2.2.0.1"
 ARG OVERLAY_ARCH="aarch64"
 
 # Add s6 overlay
-ADD https://github.com/just-containers/s6-overlay/releases/download/%{OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}-installer /tmp/
+ADD https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}-installer /tmp/
 RUN chmod +x /tmp/s6-overlay-${OVERLAY_ARCH}-installer
-RUN /tmp/s6-overlay-${OVERLAY_ARCH}-installer
+RUN /tmp/s6-overlay-${OVERLAY_ARCH}-installer /
 RUN rm /tmp/s6-overlay-${OVERLAY_ARCH}-installer
 
 COPY patch/ /tmp/patch
