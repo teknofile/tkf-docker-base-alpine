@@ -26,7 +26,7 @@ RUN apk add --no-cache \
 RUN curl -o /mkimage-alpine.bash -L https://raw.githubusercontent.com/gliberlabs/docker-alpine/master/builder/scripts/mkimage-alpine.bash 
 
 RUN chmod +x /mkimage-alpine.bash
-RUN ./mkimage-alpine.bash
+RUN /mkimage-alpine.bash
 RUN mkdir /root-out
 RUN tar xf /rootfs.tar.xz -C /root-out
 RUN sed -i -e 's/^root::/root:!:/' /root-out/etc/shadow
