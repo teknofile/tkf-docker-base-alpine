@@ -56,6 +56,7 @@ pipeline {
             script {
               withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
                 sh '''
+                  dockerImage = ''
                   dockerImage = docker.build ${DOCKERHUB_IMAGE}
                 '''
               }
