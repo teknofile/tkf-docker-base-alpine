@@ -54,7 +54,7 @@ pipeline {
             //sh "docker build --no-cache --pull -t ${IMAGE}:amd64-${META_TAG} ."
 
             script {
-              widthDockerRegistry(credentialsId: 'teknofile-dockerhub') {
+              withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
                 sh '''
                   # Create a buildx builder for this container
                   docker buildx create --user --name automated-builder-${TKF_REPO}-${BUILD_NUMBER}
