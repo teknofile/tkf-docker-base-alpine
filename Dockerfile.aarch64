@@ -13,7 +13,7 @@ libc-utils\
 xz
 
 # Install the package set
-RUN add --no-cache \
+RUN apk add --no-cache \
   bash \
   curl \
   tzdata \
