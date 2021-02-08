@@ -18,7 +18,7 @@ pipeline {
     TKF_REPO = 'tkf-docker-base-alpine'
 
     CONTAINER_NAME = 'tkf-docker-base-alpine'
-    DOCKERHUB_IAMGE = 'teknofile/tkf-docker-base-alpine'
+    DOCKERHUB_IMAGE = 'teknofile/tkf-docker-base-alpine'
   }
 
   stages {
