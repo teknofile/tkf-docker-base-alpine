@@ -5,12 +5,12 @@ FROM alpine:3.13 as rootfs-stage
 ENV REL=v3.13
 ENV ARCH=x86_64
 ENV MIRROR=http://dl-cdn.alpinelinux.org/alpine
-ENV PACKAGES=alpine-baselayout,\
-alpine-keys,\
-apk-tools,\
-busybox,\
-libc-utils,\
-xz
+#ENV PACKAGES=alpine-baselayout,\
+#alpine-keys,\
+#apk-tools,\
+#busybox,\
+#libc-utils,\
+#xz
 
 
 # Install the package set
@@ -18,7 +18,12 @@ RUN apk add --no-cache \
   bash \
   curl \
   tzdata \
-  xz
+  xz \
+  alpine-keys \
+  alpine-baselayout \
+  apk-tools \
+  busybox \
+  libc-utils
 
 # Fetch the builder script from gliberlabs
 # This script sets the timezone and does a few 
