@@ -1,17 +1,5 @@
 FROM alpine:3.13 as rootfs-stage
 
-# Environment 
-
-ENV REL=v3.13
-ENV ARCH=x86_64
-ENV MIRROR=http://dl-cdn.alpinelinux.org/alpine
-#ENV PACKAGES=alpine-baselayout,\
-#alpine-keys,\
-#apk-tools,\
-#busybox,\
-#libc-utils,\
-#xz
-
 
 # Install the package set
 RUN apk add --no-cache \
