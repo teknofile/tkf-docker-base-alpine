@@ -98,7 +98,7 @@ pipeline {
 
               docker manifest create ${DOCKERHUB_IMAGE} \
                 ${DOCKERHUB_IMAGE}:amd64 \
-                ${DOCKERHUB_IMAGE}:arm64
+                ${DOCKERHUB_IMAGE}:aarch64
 
 
               # Check the manifest before pushing
