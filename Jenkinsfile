@@ -14,7 +14,6 @@ pipeline {
 
   // Configuration for the variables used for this specific repo
   environment {
-    TKF_PLATFORMS = 'linux/arm/v7,linux/arm64,linux/amd64'
     TKF_USER = 'teknofile'
     TKF_REPO = 'tkf-docker-base-alpine'
     DOCKERHUB_IMAGE = "${TKF_USER}" + "/" + "${TKF_REPO}"
@@ -39,24 +38,22 @@ pipeline {
       }
     }
 
-
-    stage("Cloning Git") {
-      steps {
-        git([url: 'https://github.com/teknofile/tkf-docker-base-alpine.git', branch: 'main', credentialsId: 'teknofile-github-user-token'])
-      }
-    }
-
     stage('Build amd64') {
       agent {
         label 'X86_64'
       }
       steps {
         echo "Running on node: ${NODE_NAME}"
+
+        git([url: 'https://github.com/teknofile/tkf-docker-base-alpine.git', branch: 'main', credentialsId: 'teknofile-github-user-token'])
+
         script {
-          dockerImage = docker.build DOCKERHUB_IMAGE
+          env.OVERLAY_VERSION='v2.2.0.1'
+          env.OVERLAY_ARCH='amd64'
+
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
             sh '''
-              docker build --build-arg OVERLAY_VERSION=v2.2.0.1 --build-arg OVERLAY_ARCH=amd64 -t ${DOCKERHUB_IMAGE}:amd64 .
+              docker build --build-arg OVERLAY_VERSION=${OVERLAY_VERSION} --build-arg OVERLAY_ARCH=${OVERLAY_ARCH} -t ${DOCKERHUB_IMAGE}:amd64 .
               docker push ${DOCKERHUB_IMAGE}:amd64
             '''
             dockerImage.push("amd64")
@@ -70,10 +67,15 @@ pipeline {
       }
       steps {
         echo "Running on node: ${NODE_NAME}"
+        git([url: 'https://github.com/teknofile/tkf-docker-base-alpine.git', branch: 'main', credentialsId: 'teknofile-github-user-token'])
         script {
+
+          env.OVERLAY_VERSION='v2.2.0.1'
+          env.OVERLAY_ARCH='aarch64'
+
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
             sh '''
-              docker build --build-arg OVERLAY_VERSION=v2.2.0.1 --build-arg OVERLAY_ARCH=aarch64 -t ${DOCKERHUB_IMAGE}:aarch64 .
+              docker build --build-arg OVERLAY_VERSION=${OVERLAY_VERSION} --build-arg OVERLAY_ARCH=${OVERLAY_ARCH} -t ${DOCKERHUB_IMAGE}:aarch64 .
               docker push ${DOCKERHUB_IMAGE}:aarch64
             '''
           }
