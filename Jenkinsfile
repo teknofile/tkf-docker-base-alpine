@@ -88,21 +88,23 @@ pipeline {
         label 'x86_64'
       }
       steps {
-        withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
-          sh '''
-            # TODO: Make sure / test - that we have docker expieremental features enabled for this
-            # Pull in the images we need
-            docker pull ${DOCKERHUB_IMAGE}:aarch64
-            docker pull ${DOCKERHUB_IMAGE}:amd64
+        script { 
+          withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
+            sh '''
+              # TODO: Make sure / test - that we have docker expieremental features enabled for this
+              # Pull in the images we need
+              docker pull ${DOCKERHUB_IMAGE}:aarch64
+              docker pull ${DOCKERHUB_IMAGE}:amd64
 
-            docker manifest create ${DOCKERHUB_IMAGE} \
-              ${DOCKERHUB_IMAGE}:amd64 \
-              ${DOCKERHUB_IMAGE}:arm64
+              docker manifest create ${DOCKERHUB_IMAGE} \
+                ${DOCKERHUB_IMAGE}:amd64 \
+                ${DOCKERHUB_IMAGE}:arm64
 
 
-            # Check the manifest before pushing
-            docker manifest inspect ${DOCKERHUB_IMAGE}
-          '''
+              # Check the manifest before pushing
+              docker manifest inspect ${DOCKERHUB_IMAGE}
+            '''
+          }
         }
       }
     }
