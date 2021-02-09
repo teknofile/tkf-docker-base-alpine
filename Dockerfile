@@ -2,8 +2,8 @@ FROM alpine:3.13
 
 LABEL maintainer="teknofile"
 
-ARG OVERLAY_VERSION="v2.2.0.1"
-ARG OVERLAY_ARCH="amd64"
+ARG OVERLAY_VERSION
+ARG OVERLAY_ARCH
 
 RUN apk add --no-cache \
   bash \

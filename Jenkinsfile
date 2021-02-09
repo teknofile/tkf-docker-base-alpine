@@ -55,6 +55,10 @@ pipeline {
         script {
           dockerImage = docker.build DOCKERHUB_IMAGE
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
+            sh '''
+              docker build --build-arg OVERLAY_VERSION=v2.2.0.1 --build-arg OVERLAY_ARCH=amd64 -t ${DOCKERHUB_IMAGE}:amd64 .
+              docker push ${DOCKERHUB_IMAGE}:amd64
+            '''
             dockerImage.push("amd64")
           }
         }
@@ -67,9 +71,11 @@ pipeline {
       steps {
         echo "Running on node: ${NODE_NAME}"
         script {
-          dockerImage = docker.build DOCKERHUB_IMAGE
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
-            dockerImage.push("aarch64")
+            sh '''
+              docker build --build-arg OVERLAY_VERSION=v2.2.0.1 --build-arg OVERLAY_ARCH=aarch64 -t ${DOCKERHUB_IMAGE}:aarch64 .
+              docker push ${DOCKERHUB_IMAGE}:aarch64
+            '''
           }
         }
       }
