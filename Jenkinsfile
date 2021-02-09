@@ -56,7 +56,6 @@ pipeline {
               docker build --build-arg OVERLAY_VERSION=${OVERLAY_VERSION} --build-arg OVERLAY_ARCH=${OVERLAY_ARCH} -t ${DOCKERHUB_IMAGE}:amd64 .
               docker push ${DOCKERHUB_IMAGE}:amd64
             '''
-            dockerImage.push("amd64")
           }
         }
       }
