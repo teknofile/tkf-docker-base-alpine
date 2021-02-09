@@ -103,6 +103,13 @@ pipeline {
 
               # Check the manifest before pushing
               docker manifest inspect ${DOCKERHUB_IMAGE}
+
+              # If it was good (i should add some checks to see if it was) we should push it
+              docker manifest push ${DOCKERHUB_IMAGE}
+
+              # Now clean up the images we re-pulled
+              docker rmi ${DOCKERHUB_IMAGE}:aarch64
+              docker rmi ${DOCKERHUB_IMAGE}:amd64
             '''
           }
         }
