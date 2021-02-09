@@ -55,6 +55,7 @@ pipeline {
             sh '''
               docker build --build-arg OVERLAY_VERSION=${OVERLAY_VERSION} --build-arg OVERLAY_ARCH=${OVERLAY_ARCH} -t ${DOCKERHUB_IMAGE}:amd64 .
               docker push ${DOCKERHUB_IMAGE}:amd64
+              docker rmi ${DOCKERHUB_IMAGE}:amd64
             '''
           }
         }
@@ -76,6 +77,7 @@ pipeline {
             sh '''
               docker build --build-arg OVERLAY_VERSION=${OVERLAY_VERSION} --build-arg OVERLAY_ARCH=${OVERLAY_ARCH} -t ${DOCKERHUB_IMAGE}:aarch64 .
               docker push ${DOCKERHUB_IMAGE}:aarch64
+              docker rmi ${DOCKERHUB_IMAGE}:aarch64
             '''
           }
         }
