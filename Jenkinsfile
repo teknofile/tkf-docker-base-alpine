@@ -45,7 +45,7 @@ pipeline {
       steps {
         echo "Running on node: ${NODE_NAME}"
 
-        git([url: 'https://github.com/teknofile/tkf-docker-base-alpine.git', branch: 'main', credentialsId: 'teknofile-github-user-token'])
+        git([url: 'https://github.com/teknofile/tkf-docker-base-alpine.git', branch: 'main', credentialsId: 'TKFBuildBot'])
 
         script {
           env.OVERLAY_VERSION='v2.2.0.1'
