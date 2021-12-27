@@ -17,16 +17,6 @@ RUN apk add --no-cache \
   busybox \
   libc-utils
 
-# fetch builder script from gliderlabs
-RUN \
-  curl -o /mkimage-alpine.bash -L https://raw.githubusercontent.com/gliderlabs/docker-alpine/master/builder/scripts/mkimage-alpine.bash && \
-  chmod +x /mkimage-alpine.bash && \
-  ./mkimage-alpine.bash  && \
-  mkdir /root-out && \
-  tar xf \
-  /rootfs.tar.xz -C /root-out && \
-  sed -i -e 's/^root::/root:!:/' /root-out/etc/shadow
-
 RUN if [ "${TARGETPLATFORM}" == "linux/arm64" ] ; then \
       curl -o /tmp/s6-installer -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-aarch64-installer ; \
   elif [ "${TARGETPLATFORM}" == "linux/arm/v7" ] ; then \
@@ -40,11 +30,11 @@ RUN if [ "${TARGETPLATFORM}" == "linux/arm64" ] ; then \
 COPY patch/ /tmp/patch
 
 
-RUN echo "**** Installing build packages ****"
-RUN apk add --no-cache --virtual=build-dependencies \
-  curl \
-  patch \
-  tar
+RUN echo "**** Installing build packages ****" && \
+  apk add --no-cache --virtual=build-dependencies \
+    curl \
+    patch \
+    tar
 
 RUN echo "**** Installing runtime packages ****"
 RUN apk add --no-cache \

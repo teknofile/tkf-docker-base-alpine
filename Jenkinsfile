@@ -14,10 +14,7 @@ pipeline {
 
   // Configuration for the variables used for this specific repo
   environment {
-    TKF_USER = 'teknofile'
-    TKF_REPO = 'tkf-docker-base-alpine'
-    DOCKERHUB_IMAGE = "${TKF_USER}" + "/" + "${TKF_REPO}"
-    dockerImage = ''
+    CONTAINER_NAME = 'tkf-docker-base-alpine'
   }
 
   stages {
@@ -26,14 +23,15 @@ pipeline {
       steps {
         script {
           env.EXIT_STATUS = ''
-          env.GITHUB_DATE = sh(
-            script: '''date '+%Y-%m-%d%T%H:%M:%S%:z' ''',
+          env.CURR_DATE = sh(
+            script: '''date '+%Y-%m-%d_%H:%M:%S%:z' ''',
             returnStdout: true).trim()
-          env.COMMIT_SHA = sh(
-            script: '''git rev-parse HEAD''',
+          env.GITHASH_SHORT = sh(
+            script: '''git log -1 --format=%h''',
             returnStdout: true).trim()
-          env.IMAGE = env.DOCKERHUB_IMAGE
-          env.META_TAG = env.COMMIT_SHA
+          env.GITHASH_LONG = sh(
+            script: '''git log -1 --format=%H''',
+            returnStdout: true).trim()
         }
       }
     }
@@ -48,14 +46,25 @@ pipeline {
         git([url: 'https://github.com/teknofile/tkf-docker-base-alpine.git', branch: 'main', credentialsId: 'TKFBuildBot'])
 
         script {
-          env.OVERLAY_VERSION='v2.2.0.1'
-          env.OVERLAY_ARCH='amd64'
-
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
             sh '''
-              docker build --build-arg OVERLAY_VERSION=${OVERLAY_VERSION} --build-arg OVERLAY_ARCH=${OVERLAY_ARCH} -t ${DOCKERHUB_IMAGE}:amd64 .
-              docker push ${DOCKERHUB_IMAGE}:amd64
-              docker rmi ${DOCKERHUB_IMAGE}:amd64
+              docker buildx create --name tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT} --use
+              docker buildx inspect tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT} --bootstrap
+
+              docker buildx build \
+                --no-cache \
+                --pull \
+                --builder tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT} \
+                --platform linux/arm64,linux/amd64,linux/arm \
+                -t teknofile/${CONTAINER_NAME} \
+                -t teknofile/${CONTAINER_NAME}:latest \
+                -t teknofile/${CONTAINER_NAME}:${GITHASH_LONG} \
+                -t teknofile/${CONTAINER_NAME}:${GITHASH_SHORT} \
+                . \
+                --push
+
+              docker buildx stop tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT}
+              docker buildx rm tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT}
             '''
           }
         }
