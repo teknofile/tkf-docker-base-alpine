@@ -55,7 +55,7 @@ pipeline {
                 --no-cache \
                 --pull \
                 --builder tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT} \
-                --platform linux/arm64,linux/amd64 \
+                --platform linux/amd64 \
                 -t teknofile/${CONTAINER_NAME} \
                 -t teknofile/${CONTAINER_NAME}:latest \
                 -t teknofile/${CONTAINER_NAME}:${GITHASH_LONG} \
