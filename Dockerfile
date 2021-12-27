@@ -1,4 +1,4 @@
-FROM alpine:3.14
+FROM alpine:${ALPINE_VERSION}
 
 LABEL maintainer="teknofile"
 
@@ -27,7 +27,6 @@ RUN if [ "${TARGETPLATFORM}" == "linux/arm64" ] ; then \
 
 
 COPY patch/ /tmp/patch
-
 
 RUN echo "**** Installing build packages ****" && \
   apk add --no-cache --virtual=build-dependencies \

@@ -3,7 +3,6 @@ pipeline {
     // By default run stuff on a x86_64 node, when we get
     // to the parts where we need to build an image on a diff
     // architecture, we'll run that bit on a diff agent
-
     label 'X86_64'
   }
 
@@ -15,6 +14,8 @@ pipeline {
   // Configuration for the variables used for this specific repo
   environment {
     CONTAINER_NAME = 'tkf-docker-base-alpine'
+
+    ALPINE_VERSION = '3.15'
   }
 
   stages {
@@ -36,7 +37,7 @@ pipeline {
       }
     }
 
-    stage('Build amd64') {
+    stage('Build Containers') {
       agent {
         label 'X86_64'
       }
@@ -56,10 +57,12 @@ pipeline {
                 --pull \
                 --builder tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT} \
                 --platform linux/amd64,linux/arm64,linux/arm \
+                --build-arg ALPINE_VERSION=${ALPINE_VERSION} \
                 -t teknofile/${CONTAINER_NAME} \
                 -t teknofile/${CONTAINER_NAME}:latest \
                 -t teknofile/${CONTAINER_NAME}:${GITHASH_LONG} \
                 -t teknofile/${CONTAINER_NAME}:${GITHASH_SHORT} \
+                -t teknofile/${CONTAINER_NAME}:${ALPINE_VERSION} \
                 . \
                 --push
 
@@ -74,7 +77,7 @@ pipeline {
   post {
     cleanup {
       cleanWs()
-	deleteDir()
+	    deleteDir()
     }
   }
 }
