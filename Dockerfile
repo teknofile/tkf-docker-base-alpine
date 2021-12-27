@@ -1,3 +1,4 @@
+ARG ALPINE_VERSION
 FROM alpine:${ALPINE_VERSION}
 
 LABEL maintainer="teknofile"
