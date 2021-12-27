@@ -2,8 +2,9 @@ FROM alpine:3.14
 
 LABEL maintainer="teknofile"
 
-ARG OVERLAY_VERSION
-ARG OVERLAY_ARCH
+ARG S6_OVERLAY_VERSION=2.2.0.3
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
 
 RUN apk add --no-cache \
   bash \
@@ -26,11 +27,15 @@ RUN \
   /rootfs.tar.xz -C /root-out && \
   sed -i -e 's/^root::/root:!:/' /root-out/etc/shadow
 
-# Add s6 overlay
-ADD https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}-installer /tmp/ 
-RUN chmod +x /tmp/s6-overlay-${OVERLAY_ARCH}-installer && \
-  /tmp/s6-overlay-${OVERLAY_ARCH}-installer / && \
-  rm /tmp/s6-overlay-${OVERLAY_ARCH}-installer
+RUN if [ "${TARGETPLATFORM}" == "linux/arm64" ] ; then \
+      curl -o /tmp/s6-installer -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-aarch64-installer ; \
+  elif [ "${TARGETPLATFORM}" == "linux/arm/v7" ] ; then \
+      curl -o /tmp/s6-installer -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-armhf-installer ; \
+  else \
+      curl -o /tmp/s6-installer -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-amd64-installer ; \
+  fi && \
+  chmod +x /tmp/s6-installer && /tmp/s6-installer /
+
 
 COPY patch/ /tmp/patch
 
