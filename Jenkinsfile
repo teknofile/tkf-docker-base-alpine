@@ -43,7 +43,7 @@ pipeline {
       steps {
         echo "Running on node: ${NODE_NAME}"
 
-        git([url: 'https://github.com/teknofile/tkf-docker-base-alpine.git', branch: 'main', credentialsId: 'TKFBuildBot'])
+        git([url: 'https://github.com/teknofile/tkf-docker-base-alpine.git', branch: env.BRANCH_NAME, credentialsId: 'TKFBuildBot'])
 
         script {
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {

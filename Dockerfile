@@ -3,9 +3,7 @@ FROM alpine:3.14
 LABEL maintainer="teknofile"
 
 ARG S6_OVERLAY_VERSION=2.2.0.3
-
 ARG TARGETPLATFORM
-ARG BUILDPLATFORM
 
 RUN apk add --no-cache \
   bash \
