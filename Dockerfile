@@ -16,6 +16,16 @@ RUN apk add --no-cache \
   busybox \
   libc-utils
 
+# fetch builder script from gliderlabs
+RUN \
+  curl -o /mkimage-alpine.bash -L https://raw.githubusercontent.com/gliderlabs/docker-alpine/master/builder/scripts/mkimage-alpine.bash && \
+  chmod +x /mkimage-alpine.bash && \
+  ./mkimage-alpine.bash  && \
+  mkdir /root-out && \
+  tar xf \
+  /rootfs.tar.xz -C /root-out && \
+  sed -i -e 's/^root::/root:!:/' /root-out/etc/shadow
+
 # Add s6 overlay
 ADD https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}-installer /tmp/ 
 RUN chmod +x /tmp/s6-overlay-${OVERLAY_ARCH}-installer && \
