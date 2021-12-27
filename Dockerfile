@@ -17,8 +17,8 @@ RUN apk add --no-cache \
   libc-utils
 
 # Add s6 overlay
-ADD https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}-installer /tmp/ && \
-  chmod +x /tmp/s6-overlay-${OVERLAY_ARCH}-installer && \
+ADD https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}-installer /tmp/ 
+RUN chmod +x /tmp/s6-overlay-${OVERLAY_ARCH}-installer && \
   /tmp/s6-overlay-${OVERLAY_ARCH}-installer / && \
   rm /tmp/s6-overlay-${OVERLAY_ARCH}-installer
 
