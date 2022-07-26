@@ -64,7 +64,7 @@ pipeline {
                 --pull \
                 --platform linux/amd64,linux/arm64,linux/arm \
                 --build-arg ALPINE_VERSION=${ALPINE_VERSION} \
-                --build-arg S6_OVERLAY_VERSION=${S6_OVERLAY_VERSION}
+                --build-arg S6_OVERLAY_VERSION=${S6_OVERLAY_VERSION} \
                 -t teknofile/${CONTAINER_NAME} \
                 -t teknofile/${CONTAINER_NAME}:${BUILD_ID} \
                 -t teknofile/${CONTAINER_NAME}:${GITHASH_LONG} \
