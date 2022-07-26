@@ -54,9 +54,10 @@ pipeline {
 
         script {
 
-          valuesYaml = loadConfigYaml()
-          println valuesYaml.getClass()
+          configYaml = loadConfigYaml()
+          println configYaml.getClass()
           
+          env.ALPINE_VERSION 
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
             sh '''
               docker buildx create --bootstrap --use --name tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT}
@@ -64,7 +65,7 @@ pipeline {
                 --no-cache \
                 --pull \
                 --platform linux/amd64,linux/arm64,linux/arm \
-                --build-arg ALPINE_VERSION=${ALPINE_VERSION} \
+                --build-arg ALPINE_VERSION=${configYaml.alpine.srcVersion} \
                 -t teknofile/${CONTAINER_NAME} \
                 -t teknofile/${CONTAINER_NAME}:latest \
                 -t teknofile/${CONTAINER_NAME}:${GITHASH_LONG} \
