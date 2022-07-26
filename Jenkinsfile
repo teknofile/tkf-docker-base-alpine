@@ -20,8 +20,6 @@ pipeline {
   // Configuration for the variables used for this specific repo
   environment {
     CONTAINER_NAME = 'tkf-docker-base-alpine'
-
-    ALPINE_VERSION = '3.15'
   }
 
   stages {
@@ -77,6 +75,19 @@ pipeline {
               docker buildx rm tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT}
             '''
           }
+        }
+      }
+    }
+    stage('Tag Latest') {
+      when {
+        branch "main"
+      }
+      steps {
+        withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
+          sh '''
+            docker tag teknofile/${CONTAINER_NAME}:${GITHASH_LONG} teknofile/${CONTAINER_NAME}:latest
+            docker push teknofile/${CONTAINER_NAME}:latest
+          '''
         }
       }
     }
