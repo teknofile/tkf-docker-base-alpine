@@ -83,7 +83,7 @@ pipeline {
         branch "main"
       }
       steps {
-        script {}
+        script {
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
             sh '''
               docker tag teknofile/${CONTAINER_NAME}:${GITHASH_LONG} teknofile/${CONTAINER_NAME}:latest
