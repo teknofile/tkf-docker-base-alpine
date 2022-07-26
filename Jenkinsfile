@@ -55,8 +55,7 @@ pipeline {
         script {
 
           configYaml = loadConfigYaml()
-          println configYaml.getClass()
-          println configYaml.alpine.srcVersion
+          ALPINE_VERSION = configYaml.alpine.srcVersion
           
           env.ALPINE_VERSION 
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
@@ -66,7 +65,7 @@ pipeline {
                 --no-cache \
                 --pull \
                 --platform linux/amd64,linux/arm64,linux/arm \
-                --build-arg ALPINE_VERSION=${configYaml.alpine.srcVersion} \
+                --build-arg ALPINE_VERSION=${ALPINE_VERSION} \
                 -t teknofile/${CONTAINER_NAME} \
                 -t teknofile/${CONTAINER_NAME}:latest \
                 -t teknofile/${CONTAINER_NAME}:${GITHASH_LONG} \
