@@ -1,3 +1,9 @@
+def loadConfigYaml()
+{
+  def valuesYaml = readYaml (file: './config.yaml')
+  return valuesYaml;
+}
+
 pipeline {
   agent {
     // By default run stuff on a x86_64 node, when we get
@@ -47,11 +53,12 @@ pipeline {
         git([url: 'https://github.com/teknofile/tkf-docker-base-alpine.git', branch: env.BRANCH_NAME, credentialsId: 'TKFBuildBot'])
 
         script {
+
+          valuesYaml = loadValuesYaml()
+          println valuesYaml.getClass()
+          
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
             sh '''
-              docker buildx create --name tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT} --use
-              docker buildx inspect tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT} --bootstrap
-
               docker buildx build \
                 --no-cache \
                 --pull \
