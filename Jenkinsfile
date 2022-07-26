@@ -83,12 +83,14 @@ pipeline {
         branch "main"
       }
       steps {
-        withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
-          sh '''
-            docker tag teknofile/${CONTAINER_NAME}:${GITHASH_LONG} teknofile/${CONTAINER_NAME}:latest
-            docker push teknofile/${CONTAINER_NAME}:latest
-          '''
-        }
+        script {}
+          withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
+            sh '''
+              docker tag teknofile/${CONTAINER_NAME}:${GITHASH_LONG} teknofile/${CONTAINER_NAME}:latest
+              docker push teknofile/${CONTAINER_NAME}:latest
+            '''
+          }
+        } 
       }
     }
   }
