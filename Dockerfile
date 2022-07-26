@@ -22,12 +22,15 @@ RUN if [ "${TARGETPLATFORM}" == "linux/arm64" ] ; then \
   elif [ "${TARGETPLATFORM}" == "linux/arm/v7" ] ; then \
     curl -o /tmp/s6.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-armhf.tar.xz ; \
   else \
-    curl -o /tmp/s6.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-amd64.tar.xz ; \
+    curl -o /tmp/s6.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz ; \
   fi
 
+RUN ls -alh /tmp/
+
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
-RUN tar -C / -Jxpf /tmp/s6.tar.xz
+
+RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz && \
+  tar -C / -Jxpf /tmp/s6.tar.xz
 
 #  chmod +x /tmp/s6-installer && /tmp/s6-installer /
 
