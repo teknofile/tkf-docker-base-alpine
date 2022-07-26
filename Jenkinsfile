@@ -55,9 +55,8 @@ pipeline {
         script {
 
           configYaml = loadConfigYaml()
-          ALPINE_VERSION = configYaml.alpine.srcVersion
+          env.ALPINE_VERSION = configYaml.alpine.srcVersion
           
-          env.ALPINE_VERSION 
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
             sh '''
               docker buildx create --bootstrap --use --name tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT}
