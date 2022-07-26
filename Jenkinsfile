@@ -58,13 +58,14 @@ pipeline {
 
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
             sh '''
+              #                --platform linux/amd64,linux/arm64,linux/arm \
               docker buildx create --bootstrap --use --name tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT}
               docker buildx build \
                 --no-cache \
                 --pull \
-                --platform linux/amd64,linux/arm64,linux/arm \
                 --build-arg ALPINE_VERSION=${ALPINE_VERSION} \
                 --build-arg S6_OVERLAY_VERSION=${S6_OVERLAY_VERSION} \
+                --platform linux/amd64 \
                 -t teknofile/${CONTAINER_NAME}:${BUILD_ID} \
                 -t teknofile/${CONTAINER_NAME}:${GITHASH_LONG} \
                 -t teknofile/${CONTAINER_NAME}:${GITHASH_SHORT} \
