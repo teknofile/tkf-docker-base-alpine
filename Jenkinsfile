@@ -1,3 +1,9 @@
+def loadConfigYaml()
+{
+  def valuesYaml = readYaml (file: './config.yaml')
+  return valuesYaml;
+}
+
 pipeline {
   agent {
     // By default run stuff on a x86_64 node, when we get
@@ -14,8 +20,6 @@ pipeline {
   // Configuration for the variables used for this specific repo
   environment {
     CONTAINER_NAME = 'tkf-docker-base-alpine'
-
-    ALPINE_VERSION = '3.15'
   }
 
   stages {
@@ -47,19 +51,21 @@ pipeline {
         git([url: 'https://github.com/teknofile/tkf-docker-base-alpine.git', branch: env.BRANCH_NAME, credentialsId: 'TKFBuildBot'])
 
         script {
+
+          configYaml = loadConfigYaml()
+          env.ALPINE_VERSION = configYaml.alpine.srcVersion
+          env.S6_OVERLAY_VERSION = configYaml.s6overlay.version
+
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
             sh '''
-              docker buildx create --name tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT} --use
-              docker buildx inspect tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT} --bootstrap
-
+              docker buildx create --bootstrap --use --name tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT}
               docker buildx build \
                 --no-cache \
                 --pull \
-                --builder tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT} \
-                --platform linux/amd64,linux/arm64,linux/arm \
                 --build-arg ALPINE_VERSION=${ALPINE_VERSION} \
-                -t teknofile/${CONTAINER_NAME} \
-                -t teknofile/${CONTAINER_NAME}:latest \
+                --build-arg S6_OVERLAY_VERSION=${S6_OVERLAY_VERSION} \
+                --platform linux/amd64,linux/arm64,linux/arm \
+                -t teknofile/${CONTAINER_NAME}:${BUILD_ID} \
                 -t teknofile/${CONTAINER_NAME}:${GITHASH_LONG} \
                 -t teknofile/${CONTAINER_NAME}:${GITHASH_SHORT} \
                 -t teknofile/${CONTAINER_NAME}:${ALPINE_VERSION} \
@@ -71,6 +77,21 @@ pipeline {
             '''
           }
         }
+      }
+    }
+    stage('Tag Latest') {
+      when {
+        branch "main"
+      }
+      steps {
+        script {
+          withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
+            sh '''
+              docker tag teknofile/${CONTAINER_NAME}:${GITHASH_LONG} teknofile/${CONTAINER_NAME}:latest
+              docker push teknofile/${CONTAINER_NAME}:latest
+            '''
+          }
+        } 
       }
     }
   }

@@ -3,12 +3,13 @@ FROM alpine:${ALPINE_VERSION}
 
 LABEL maintainer="teknofile"
 
-ARG S6_OVERLAY_VERSION=2.2.0.3
+ARG S6_OVERLAY_VERSION
 ARG TARGETPLATFORM
 
 RUN apk add --no-cache \
   bash \
   curl \
+  wget \
   tzdata \ 
   xz \
   alpine-keys \
@@ -18,14 +19,19 @@ RUN apk add --no-cache \
   libc-utils
 
 RUN if [ "${TARGETPLATFORM}" == "linux/arm64" ] ; then \
-      curl -o /tmp/s6-installer -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-aarch64-installer ; \
+    curl -o /tmp/s6.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-aarch64.tar.xz ; \
   elif [ "${TARGETPLATFORM}" == "linux/arm/v7" ] ; then \
-      curl -o /tmp/s6-installer -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-armhf-installer ; \
+    curl -o /tmp/s6.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-armhf.tar.xz ; \
   else \
-      curl -o /tmp/s6-installer -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-amd64-installer ; \
-  fi && \
-  chmod +x /tmp/s6-installer && /tmp/s6-installer /
+    curl -o /tmp/s6.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz ; \
+  fi
 
+#ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
+RUN curl -o /tmp/s6-overlay-noarch.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz
+
+RUN ls -alh /tmp/s6*xz
+RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
+RUN tar -C / -Jxpf /tmp/s6.tar.xz
 
 COPY patch/ /tmp/patch
 
@@ -49,8 +55,6 @@ RUN echo "**** Creatring the abc user and making dirs for our use ****" && \
   useradd -u 911 -U -d /config -s /bin/false abc && \
   usermod -G users abc && \
   mkdir -p /app /config /defaults && \
-  mv /usr/bin/with-contenv /usr/bin/with-contenvb && \
-  patch -u /etc/s6/init/init-stage2 -i /tmp/patch/etc/s6/init/init-stage2.patch && \
   echo "**** cleanup ****" && \
   apk del --purge build-dependencies && \
   rm -rf /tmp/*
