@@ -56,6 +56,7 @@ pipeline {
 
           configYaml = loadConfigYaml()
           println configYaml.getClass()
+          println configYaml.alpine.srcVersion
           
           env.ALPINE_VERSION 
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
