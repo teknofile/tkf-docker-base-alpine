@@ -54,7 +54,7 @@ pipeline {
 
           configYaml = loadConfigYaml()
           env.ALPINE_VERSION = configYaml.alpine.srcVersion
-          println env.ALPINE_VERSION
+          env.S6_OVERLAY_VERSION = configYaml.s6overlay.version
 
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
             sh '''
@@ -64,7 +64,9 @@ pipeline {
                 --pull \
                 --platform linux/amd64,linux/arm64,linux/arm \
                 --build-arg ALPINE_VERSION=${ALPINE_VERSION} \
+                --build-arg S6_OVERLAY_VERSION=${S6_OVERLAY_VERSION}
                 -t teknofile/${CONTAINER_NAME} \
+                -t teknofile/${CONTAINER_NAME}:${BUILD_ID} \
                 -t teknofile/${CONTAINER_NAME}:${GITHASH_LONG} \
                 -t teknofile/${CONTAINER_NAME}:${GITHASH_SHORT} \
                 -t teknofile/${CONTAINER_NAME}:${ALPINE_VERSION} \

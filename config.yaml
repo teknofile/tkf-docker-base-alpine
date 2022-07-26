@@ -1,2 +1,4 @@
 alpine:
   srcVersion: 3.16.1
+s6overlay:
+  version: 3.1.1.2
