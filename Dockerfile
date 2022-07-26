@@ -18,7 +18,7 @@ RUN apk add --no-cache \
   libc-utils
 
 RUN if [ "${TARGETPLATFORM}" == "linux/arm64" ] ; then \
-    curl -o /tmp/s6.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-aarch64-.tar.xz ; \
+    curl -o /tmp/s6.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-aarch64.tar.xz ; \
   elif [ "${TARGETPLATFORM}" == "linux/arm/v7" ] ; then \
     curl -o /tmp/s6.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-armhf.tar.xz ; \
   else \
