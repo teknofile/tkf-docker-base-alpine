@@ -54,7 +54,7 @@ pipeline {
 
         script {
 
-          valuesYaml = loadValuesYaml()
+          valuesYaml = loadConfigYaml()
           println valuesYaml.getClass()
           
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
