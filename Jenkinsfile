@@ -62,7 +62,6 @@ pipeline {
               docker buildx build \
                 --no-cache \
                 --pull \
-                --builder tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT} \
                 --platform linux/amd64,linux/arm64,linux/arm \
                 --build-arg ALPINE_VERSION=${ALPINE_VERSION} \
                 -t teknofile/${CONTAINER_NAME} \
