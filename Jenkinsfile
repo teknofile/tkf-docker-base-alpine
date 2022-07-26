@@ -87,6 +87,7 @@ pipeline {
         script {
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
             sh '''
+              docker pull teknofile/${CONTAINER_NAME}:${GITHASH_LONG}
               docker tag teknofile/${CONTAINER_NAME}:${GITHASH_LONG} teknofile/${CONTAINER_NAME}:latest
               docker push teknofile/${CONTAINER_NAME}:latest
             '''
