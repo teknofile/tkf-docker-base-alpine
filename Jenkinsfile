@@ -59,6 +59,7 @@ pipeline {
           
           withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
             sh '''
+              docker buildx create --bootstrap --use --name tkf-builder-${CONTAINER_NAME}-${GITHASH_SHORT}
               docker buildx build \
                 --no-cache \
                 --pull \
