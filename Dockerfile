@@ -9,6 +9,7 @@ ARG TARGETPLATFORM
 RUN apk add --no-cache \
   bash \
   curl \
+  wget \
   tzdata \ 
   xz \
   alpine-keys \
