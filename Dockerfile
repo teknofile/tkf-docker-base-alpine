@@ -31,7 +31,6 @@ RUN tar -C / -Jxpf /tmp/s6.tar.xz
 
 #  chmod +x /tmp/s6-installer && /tmp/s6-installer /
 
-
 COPY patch/ /tmp/patch
 
 RUN echo "**** Installing build packages ****" && \
