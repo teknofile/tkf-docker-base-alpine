@@ -18,16 +18,16 @@ RUN apk add --no-cache \
   libc-utils
 
 RUN if [ "${TARGETPLATFORM}" == "linux/arm64" ] ; then \
-    curl -o /tmp/s6.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-aarch64.tar.xz ; \
+    wget -o /tmp/s6.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-aarch64.tar.xz ; \
   elif [ "${TARGETPLATFORM}" == "linux/arm/v7" ] ; then \
-    curl -o /tmp/s6.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-armhf.tar.xz ; \
+    wget -o /tmp/s6.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-armhf.tar.xz ; \
   else \
-    curl -o /tmp/s6.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz ; \
+    wget -o /tmp/s6.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz ; \
   fi
 
-RUN ls -alh /tmp/s6.tar.xz
-
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
+
+RUN ls -alh /tmp/s6*xz
 
 RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
 RUN tar -C / -Jxpf /tmp/s6.tar.xz
