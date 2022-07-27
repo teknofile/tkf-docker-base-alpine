@@ -69,6 +69,7 @@ pipeline {
                 -t teknofile/${CONTAINER_NAME}:${GITHASH_LONG} \
                 -t teknofile/${CONTAINER_NAME}:${GITHASH_SHORT} \
                 -t teknofile/${CONTAINER_NAME}:${ALPINE_VERSION} \
+                -t teknofile/${CONTAINER_NAME}:latest \
                 . \
                 --push
 
@@ -77,22 +78,6 @@ pipeline {
             '''
           }
         }
-      }
-    }
-    stage('Tag Latest') {
-      when {
-        branch "main"
-      }
-      steps {
-        script {
-          withDockerRegistry(credentialsId: 'teknofile-dockerhub') {
-            sh '''
-              docker pull teknofile/${CONTAINER_NAME}:${GITHASH_LONG}
-              docker tag teknofile/${CONTAINER_NAME}:${GITHASH_LONG} teknofile/${CONTAINER_NAME}:latest
-              docker push teknofile/${CONTAINER_NAME}:latest
-            '''
-          }
-        } 
       }
     }
   }
