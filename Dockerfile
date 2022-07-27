@@ -59,6 +59,10 @@ RUN echo "**** Creatring the abc user and making dirs for our use ****" && \
   apk del --purge build-dependencies && \
   rm -rf /tmp/*
 
+# Fix some perms issues (potentially?)
+RUN echo "**** Fixing perms ****" && \
+	chmod +x /etc/cont-init.d/*
+
 # Add local files
 COPY root/ /
 
